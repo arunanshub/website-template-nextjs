@@ -6,12 +6,7 @@ import { TanstackQueryProvider } from './query-provider'
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
-    <ThemeProvider
-      attribute="data-theme"
-      defaultTheme="dark"
-      enableSystem={false}
-      disableTransitionOnChange
-    >
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
       <TanstackQueryProvider>{children}</TanstackQueryProvider>
     </ThemeProvider>
   )
