@@ -1,7 +1,10 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  cacheComponents: true,
+  partialPrefetching: true,
+  reactCompiler: true,
+
   experimental: {
     agentFeedback: true,
 
@@ -16,9 +19,7 @@ const nextConfig: NextConfig = {
     // perf
     turbopackRustReactCompiler: true,
   },
-  cacheComponents: true,
-  partialPrefetching: true,
-  reactCompiler: true,
+
   turbopack: {
     rules: {
       '*.css': {
