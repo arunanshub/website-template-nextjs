@@ -1,0 +1,8 @@
+[tools]
+bun = "latest"
+lefthook = "latest"
+uv = "latest"
+
+[settings]
+lockfile = true
+lockfile_auto_prune = true
