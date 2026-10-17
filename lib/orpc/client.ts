@@ -27,8 +27,13 @@ declare global {
   var $client: CustomRouterClient | undefined
 }
 
-// On the server this is the in-process router client; in the browser, an HTTP client
-// to the current origin.
-export const client: CustomRouterClient = globalThis.$client ?? createORPCClient(link)
+/**
+ * Prefer creating `createRouterClient(routes)` for server functions. See
+ * `functions.ts` in `app/(app)/` for example. This variable exists only to
+ * allow oRPC Tanstack integration to work in both server and client
+ * environments without making a backend call via HTTP and use the router client
+ * directly.
+ */
+const client: CustomRouterClient = globalThis.$client ?? createORPCClient(link)
 
 export const orpcQuery = createTanstackQueryUtils(client)
