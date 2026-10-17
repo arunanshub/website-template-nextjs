@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono, Inter } from 'next/font/google'
 
+import { Toaster } from '@/components/ui/sonner'
 // Must import orpc server side client here to ensure that during build time
 // nextjs is able to execute `orpcQuery`.
 // oxlint-disable-next-line import/no-unassigned-import
@@ -43,7 +44,11 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
       )}
     >
       <body className="flex min-h-svh flex-col">
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+
+          <Toaster richColors closeButton />
+        </Providers>
       </body>
     </html>
   )

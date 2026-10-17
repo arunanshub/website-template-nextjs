@@ -1,7 +1,9 @@
 'use client'
 
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
+import { Button } from '@/components/ui/button'
 import { orpcQuery } from '@/lib/orpc/client'
 
 export function FetchDataOnClient() {
@@ -19,4 +21,30 @@ export function SuspendedDataOnClient() {
   const { data } = useSuspenseQuery(orpcQuery.index.fetchData.queryOptions())
 
   return <div>This data is from server: {data}</div>
+}
+
+export function ShowToast() {
+  return (
+    <div>
+      <Button
+        onClick={() => {
+          toast.info('Hello from toast!')
+        }}
+      >
+        Show toast
+      </Button>
+    </div>
+  )
+}
+
+export function ShowStreaming() {
+  const { data } = useQuery(
+    orpcQuery.index.streamData.liveOptions({
+      // queryFnOptions: {
+      //   refetchMode: 'replace',
+      // },
+    }),
+  )
+
+  return <div>streaming = {JSON.stringify(data)}</div>
 }

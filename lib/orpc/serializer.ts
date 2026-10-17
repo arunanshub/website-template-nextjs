@@ -2,9 +2,9 @@
  * The entire app should use one and only one serializer kind when talking via
  * oRPC. Any customization made to the serializer should be done here.
  */
-import { RPCJsonSerializer } from '@orpc/client'
+import { RPCSerializer } from '@orpc/client'
 
-const oRPCSerializer = new RPCJsonSerializer({
+const oRPCSerializer = new RPCSerializer({
   handlers: {
     // oRPC has no built-in Uint8Array handler, so it sends the bytes as a plain object.
     uint8array: {

@@ -8,6 +8,16 @@ const routes = {
     await new Promise((resolve) => setTimeout(resolve, 1000))
     return 'data from server'
   }),
+
+  streamData: base.handler(async function* ({ signal, lastEventId }) {
+    // oxlint-disable-next-line typescript/no-unnecessary-condition
+    while (true) {
+      signal?.throwIfAborted()
+      yield { message: 'Hello, world!', lastEventId }
+      // oxlint-disable-next-line no-await-in-loop no-promise-executor-return typescript/strict-void-return
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+    }
+  }),
 }
 
 export default routes

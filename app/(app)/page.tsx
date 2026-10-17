@@ -7,7 +7,12 @@ import { Button } from '@/components/ui/button'
 import { orpcQuery } from '@/lib/orpc/client'
 import { getQueryClient } from '@/lib/query'
 
-import { FetchDataOnClient, SuspendedDataOnClient } from './_components/client'
+import {
+  FetchDataOnClient,
+  ShowStreaming,
+  ShowToast,
+  SuspendedDataOnClient,
+} from './_components/client'
 import { r } from './functions'
 
 export default function Home() {
@@ -15,11 +20,15 @@ export default function Home() {
     <div className="">
       <Button>Static button</Button>
 
+      <ShowToast />
+
       <Suspense fallback={<div>loading</div>}>
         <LoadData />
       </Suspense>
 
       <FetchDataOnClient />
+
+      <ShowStreaming />
 
       <Suspense fallback={<div>The suspended data is loading...</div>}>
         <PrefetchedData />
