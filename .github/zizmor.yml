@@ -1,0 +1,9 @@
+rules:
+  unpinned-uses:
+    config:
+      policies:
+        # Workflows reference actions by tag; .github/workflows/actions.lock
+        # (managed by `gh actions-lock`) pins each tag to a commit SHA. zizmor
+        # does not read that lockfile yet (zizmorcore/zizmor#2371), so accept
+        # tag pins here instead of requiring SHAs inline.
+        '*': ref-pin

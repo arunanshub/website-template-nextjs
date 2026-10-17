@@ -40,3 +40,8 @@ pre-commit:
             run: lefthook validate
             glob:
               - 'lefthook.yml'
+
+          - name: zizmor
+            run: zizmor --quiet .github
+            glob:
+              - '.github/**/*.{yml,yaml}'

@@ -6,6 +6,7 @@ uv = "latest"
 # dependency needs a wheel; the global 3.15 has none yet for pyyaml (copier).
 python = "3.14"
 "pypi:copier" = "latest"
+zizmor = "latest"
 
 [settings]
 lockfile = true
