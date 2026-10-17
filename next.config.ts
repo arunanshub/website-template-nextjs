@@ -19,6 +19,8 @@ const nextConfig: NextConfig = {
     turbopackCrossModuleConstants: true,
     turbopackChunking: { generateComponentChunks: true },
     serverMinification: true,
+    turbopackCjsTreeShaking: true,
+    turbopackCjsScopeHoisting: true,
 
     // DX improvement
     requestInsights: true,
