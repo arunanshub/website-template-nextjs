@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
   experimental: {
     agentFeedback: true,
 
+    // ux improvement
+    cachedNavigations: true,
+
     // build output improvement
     turbopackCrossModuleConstants: true,
     turbopackChunking: { generateComponentChunks: true },
