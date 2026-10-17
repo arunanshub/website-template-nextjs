@@ -1,5 +1,8 @@
+import type { RPCJsonSerialization } from '@orpc/client'
 import { QueryClient, defaultShouldDehydrateQuery, environmentManager } from '@tanstack/react-query'
 import { cache } from 'react'
+
+import { oRPCSerializer } from '@/lib/orpc/serializer'
 
 function makeQueryClient() {
   return new QueryClient({
@@ -9,11 +12,15 @@ function makeQueryClient() {
         staleTime: 60 * 1000,
       },
       dehydrate: {
+        serializeData: (data) => oRPCSerializer.serialize(data),
         // Next.js relies on its own errors to detect dynamic rendering; don't redact them
         shouldRedactErrors: () => false,
         // include pending queries so un-awaited prefetches stream to the client
         shouldDehydrateQuery: (query) =>
           defaultShouldDehydrateQuery(query) || query.state.status === 'pending',
+      },
+      hydrate: {
+        deserializeData: (data: RPCJsonSerialization) => oRPCSerializer.deserialize(data),
       },
     },
   })
