@@ -1,0 +1,27 @@
+# Copier template for a Next.js site. See README.md for usage.
+_min_copier_version: '9.4'
+_templates_suffix: .jinja
+_answers_file: .copier-answers.yml
+# Replaces copier's default list, so the defaults are repeated first.
+_exclude:
+  - copier.yml
+  - copier.yaml
+  - '~*'
+  - .git
+  - .DS_Store
+  - node_modules
+  - .next
+  - '*.tsbuildinfo'
+  - next-env.d.ts
+  # An opt-in feature is one bool question plus its files here, e.g.
+  # - "{% if not use_orpc %}orpc/{% endif %}"
+
+project_name:
+  type: str
+  help: Site name, shown in the page title and README
+  validator: '{% if not project_name.strip() %}Required{% endif %}'
+
+project_description:
+  type: str
+  help: One-line description for the README and meta description
+  default: ''

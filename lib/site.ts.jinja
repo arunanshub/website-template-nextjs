@@ -1,0 +1,7 @@
+{%- macro str(value) -%}
+'{{ value | replace("\\", "\\\\") | replace("'", "\\'") }}'
+{%- endmacro -%}
+export const site = {
+  name: {{ str(project_name) }},
+  description: {{ str(project_description) }},
+} as const

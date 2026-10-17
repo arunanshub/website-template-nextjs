@@ -1,0 +1,20 @@
+# {{ project_name }}
+{% if project_description %}
+{{ project_description }}
+{% endif %}
+## Development
+
+```bash
+mise trust && mise install   # bun, lefthook, uv, copier
+bun install
+lefthook install    # pre-commit: lint, format, typecheck
+bun dev
+```
+
+## Template updates
+
+This project was generated from a Copier template. Pull in template changes with:
+
+```bash
+copier update
+```
