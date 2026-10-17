@@ -2,7 +2,13 @@
 bun = "latest"
 lefthook = "latest"
 uv = "latest"
+# Python for pypi tools only. mise installs them with `uv sync --no-build`, so every
+# dependency needs a wheel; the global 3.15 has none yet for pyyaml (copier).
+python = "3.14"
+"pypi:copier" = "latest"
 
 [settings]
 lockfile = true
 lockfile_auto_prune = true
+pypi = { uvx = true }
+python = { uv_venv_auto = true }
