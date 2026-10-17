@@ -1,0 +1,33 @@
+# Build output
+.next/
+out/
+build/
+
+# Generated
+.source/
+pnpm-lock.yaml
+next-env.d.ts
+
+# Binary / unformattable
+**/*.ico
+**/*.png
+**/*.jpg
+**/*.jpeg
+**/*.svg
+**/*.woff
+**/*.woff2
+
+# Tooling (not this project's code)
+.agents/
+
+# Markdown eXtension
+**/*.mdx
+
+# Blog posts stay byte-identical to the Astro source
+content/blog/
+
+# Threat-intel records stay byte-identical to the Astro source
+data/threat-intel/
+
+# Agent worktrees
+.claude/

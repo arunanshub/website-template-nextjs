@@ -1,0 +1,418 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+
+  // House rules for this file, so it stays short:
+  // 1. A rule appears here only to change what its category does: turn it on
+  //    from an off category, turn it off in an on category, or set options.
+  //    A bare "error" for a rule whose category is on is a duplicate.
+  // 2. Every line has a reason. "Too many findings today" is not one; the
+  //    reasons are a conflict with the stack or a measured false positive.
+  // 3. When two rules report the same code, keep one.
+  // `oxlint --rules` prints each rule's category.
+
+  "options": {
+    // In the file, so a bare `oxlint` cannot skip the type-aware rules.
+    "typeAware": true, // needs oxlint-tsgolint
+    // A stale suppression fails the run (golangci: nolintlint allow-unused: false).
+    "reportUnusedDisableDirectives": "error"
+  },
+
+  // This list replaces the default one. A plugin left out silently disables
+  // every rule under its prefix. jest, vue and jsdoc are the wrong stack;
+  // react-perf asks for memoisation that the React Compiler already does.
+  "plugins": [
+    "eslint",
+    "typescript",
+    "unicorn",
+    "oxc",
+    "import",
+    "promise",
+    "node",
+    "react",
+    "nextjs",
+    "jsx-a11y",
+    "vitest"
+  ],
+
+  // JS plugins are alpha, so package.json pins oxlint to an exact version.
+  // Their rules do not belong to any category: only the rules listed below run.
+  "jsPlugins": [
+    { "name": "no-effect", "specifier": "eslint-plugin-react-you-might-not-need-an-effect" },
+    { "name": "security", "specifier": "eslint-plugin-security" },
+    { "name": "tanstack-query", "specifier": "@tanstack/eslint-plugin-query" }
+  ],
+
+  // The a11y rules otherwise stop at a wrapper component.
+  "settings": {
+    "jsx-a11y": { "components": { "Link": "a", "Button": "button", "Input": "input" } }
+  },
+
+  // pedantic is on as a category. On two real repos it reported 1158 and 192
+  // findings, nearly all from the eight rules turned off below; the rest is
+  // signal. style and restriction stay off because they contradict themselves
+  // (no-named-export vs no-default-export, no-async-await, no-optional-chaining),
+  // so useful rules from them are opted in by name. Of nursery, no-undef,
+  // import/named and import/export repeat tsc, and react/require-render-return
+  // needs a class component.
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error",
+    "perf": "error",
+    "pedantic": "error",
+    "style": "off",
+    "restriction": "off",
+    "nursery": "off"
+  },
+
+  "rules": {
+    // --- pedantic: off ---------------------------------------------------
+    "typescript/prefer-readonly-parameter-types": "off", // 807 findings on 360 files, nearly all DOM and library types
+    "max-lines": "off", // limit complexity, not length (golangci: funlen stays off)
+    "max-lines-per-function": "off",
+    "import/max-dependencies": "off", // the threshold is arbitrary; import/no-cycle guards structure
+    "require-await": "off", // an async Server Component without await is correct, and promise-function-async requires async
+    "typescript/require-await": "off",
+    "no-inline-comments": "off", // a trailing reason on the same line is the clearest place for it
+    "no-redeclare": "off", // reports `const X = schema; type X = Infer<typeof X>`; tsc reports a real redeclaration
+    // Same code as the type-aware typescript/ twin, which also sees through variables.
+    "no-throw-literal": "off", // typescript/only-throw-error
+    "prefer-promise-reject-errors": "off", // typescript/prefer-promise-reject-errors
+
+    // --- pedantic and suspicious: options ----------------------------------
+    "eqeqeq": ["error", "always", { "null": "ignore" }], // `x == null` covers null and undefined
+    "no-else-return": ["error", { "allowElseIf": false }],
+    // `||` on a primitive is a deliberate fallback for "" or 0, not a null test.
+    "typescript/prefer-nullish-coalescing": [
+      "error",
+      { "ignorePrimitives": { "string": true, "number": true, "boolean": true } }
+    ],
+    // The defaults let `any` and `unknown` through, which is how a non-Error escapes.
+    "typescript/only-throw-error": [
+      "error",
+      { "allowThrowingAny": false, "allowThrowingUnknown": false }
+    ],
+    // `+` joins two numbers or two strings, nothing else.
+    "typescript/restrict-plus-operands": [
+      "error",
+      {
+        "allowAny": false,
+        "allowBoolean": false,
+        "allowNullish": false,
+        "allowNumberAndString": false,
+        "allowRegExp": false,
+        "skipCompoundAssignments": false
+      }
+    ],
+    // A number reads fine in a string; a boolean, null or object there is a bug.
+    "typescript/restrict-template-expressions": [
+      "error",
+      {
+        "allowAny": false,
+        "allowArray": false,
+        "allowBoolean": false,
+        "allowNever": false,
+        "allowNullish": false,
+        "allowNumber": true,
+        "allowRegExp": false
+      }
+    ],
+    // @ts-expect-error fails once the error is gone; @ts-ignore stays silent forever.
+    "typescript/ban-ts-comment": [
+      "error",
+      { "ts-expect-error": "allow-with-description", "minimumDescriptionLength": 10 }
+    ],
+    "unicorn/no-useless-undefined": ["error", { "checkArguments": false }], // a test may pass undefined on purpose
+    // A spread after rel could drop noopener.
+    "react/jsx-no-target-blank": ["error", { "warnOnSpreadAttributes": true, "forms": true }],
+    // Side-effect imports only where the effect is the point.
+    "import/no-unassigned-import": [
+      "error",
+      { "allow": ["server-only", "client-only", "**/*.css"] }
+    ],
+    // A TODO goes to the issue tracker, not into the code.
+    "no-warning-comments": [
+      "error",
+      { "terms": ["todo", "fixme", "xxx", "hack"], "location": "anywhere" }
+    ],
+
+    // --- complexity (golangci: cyclop, gocognit, nestif) -------------------
+    // Branches and nesting, not length. `modified` counts a switch as one branch.
+    // max-depth comes from pedantic with its default of 4.
+    "complexity": ["error", { "max": 15, "variant": "modified" }],
+    "max-nested-callbacks": ["error", 3],
+    "max-params": ["error", 4], // beyond four, pass one named object
+
+    // --- stack conflicts: off ----------------------------------------------
+    "react/react-in-jsx-scope": "off", // the automatic JSX runtime
+    // The React Compiler memoises context values and default props.
+    "react/jsx-no-constructed-context-values": "off",
+    "react/no-object-type-as-default-prop": "off",
+    // The suggested tag is often wrong: role="img" on an inline SVG, role="status"
+    // on a live region, role="group" outside a form.
+    "jsx-a11y/prefer-tag-over-role": "off",
+    "vitest/require-mock-type-parameters": "off", // `unknown` satisfies it, so it only adds noise
+
+    // --- type honesty ------------------------------------------------------
+    // These close each point where `any` enters a value, plus the escape hatches.
+    "typescript/no-explicit-any": "error",
+    "typescript/no-non-null-assertion": "error",
+    "typescript/no-unnecessary-condition": "error", // nursery; finds dead branches and redundant `?.`
+    "typescript/prefer-optional-chain": "error", // nursery
+    "typescript/no-invalid-void-type": "error",
+    "typescript/no-empty-object-type": "error",
+    "typescript/no-non-null-asserted-nullish-coalescing": "error",
+    "typescript/no-dynamic-delete": "error",
+    "typescript/use-unknown-in-catch-callback-variable": "error",
+    // `x as T`, never `<T>x`. No `{…} as T`: annotate it, so a missing key is an error.
+    "typescript/consistent-type-assertions": [
+      "error",
+      { "assertionStyle": "as", "objectLiteralTypeAssertions": "never" }
+    ],
+    "typescript/prefer-readonly": "error",
+    "typescript/no-inferrable-types": "error",
+    "typescript/dot-notation": "error", // matches tsconfig noPropertyAccessFromIndexSignature
+    "no-implicit-coercion": "error", // `Boolean(x)` and `Number(x)`, not `!!x` and `+x`
+
+    // --- async -------------------------------------------------------------
+    // no-floating-promises, await-thenable and no-misused-promises come from categories.
+    "typescript/promise-function-async": "error",
+    "promise/catch-or-return": "error",
+    "promise/no-return-wrap": "error",
+    "promise/no-nesting": "error",
+    "promise/spec-only": "error",
+    "promise/no-return-in-finally": "error", // nursery
+    "promise/prefer-await-to-then": "error", // one async style: await, not .then chains
+    "promise/param-names": "error", // new Promise((resolve, reject) => …)
+    "unicorn/no-await-expression-member": "error", // `(await x).y` hides which step failed
+
+    // --- modules and architecture (golangci: depguard) ---------------------
+    "import/no-cycle": "error",
+    "import/no-duplicates": "error",
+    "import/no-mutable-exports": "error",
+    "import/first": "error", // ESM hoists imports anyway; code above them misleads
+    "import/no-webpack-loader-syntax": "error", // loaders belong in next.config, not in the specifier
+    // ESM only: no require, module.exports or __dirname. Covers no-require-imports and no-dynamic-require.
+    "unicorn/prefer-module": "error",
+    "unicorn/no-anonymous-default-export": "error", // a named default export names the stack frame and devtools node
+    "typescript/no-namespace": "error",
+    // With verbatimModuleSyntax, these keep type-only imports and exports erasable.
+    "typescript/consistent-type-imports": "error",
+    "typescript/consistent-type-exports": "error",
+    "typescript/no-import-type-side-effects": "error",
+    "oxc/no-barrel-file": ["error", { "threshold": 0 }], // the default of 100 never reports
+    "unicorn/prefer-node-protocol": "error",
+    // Read process.env only in env.ts. Add it (t3-env or a schema) with the first variable.
+    "node/no-process-env": "error",
+    // Project boundaries live here, one entry per decision (golangci: depguard,
+    // forbidigo). An override replaces a rule's whole option list. To exempt a
+    // file from one entry only, move this rule into an override with
+    // `"files": ["**"]` and list that file in `excludeFiles`; do not copy the list.
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "react",
+            // The layout and insertion variants are the same escape hatch under another name.
+            "importNames": ["useEffect", "useLayoutEffect", "useInsertionEffect"],
+            "message": "Derive the value, move the work into an event handler, or use useMountEffect from @/hooks/use-mount-effect."
+          }
+        ]
+      }
+    ],
+    "no-restricted-properties": [
+      "error",
+      {
+        "object": "React",
+        "property": "useEffect",
+        "message": "Derive the value, move the work into an event handler, or use useMountEffect from @/hooks/use-mount-effect."
+      },
+      {
+        "object": "React",
+        "property": "useLayoutEffect",
+        "message": "Derive the value, move the work into an event handler, or use useMountEffect from @/hooks/use-mount-effect."
+      },
+      {
+        "object": "React",
+        "property": "useInsertionEffect",
+        "message": "Derive the value, move the work into an event handler, or use useMountEffect from @/hooks/use-mount-effect."
+      }
+    ],
+
+    // --- code execution and secrets (golangci: gosec) ----------------------
+    // The categories supply no-eval and no-implied-eval; these close the other paths.
+    "no-new-func": "error",
+    "no-script-url": "error",
+    "no-proto": "error",
+    "unicorn/no-document-cookie": "error", // use cookies() from next/headers or the Cookie Store API
+    // These DOM globals type-check, so a missing local `name` or `event` silently reads window's.
+    "no-restricted-globals": [
+      "error",
+      "event",
+      "name",
+      "length",
+      "status",
+      "close",
+      "open",
+      "parent",
+      "top"
+    ],
+    "node/no-sync": "error", // a sync fs call blocks every request on the server
+    "security/detect-child-process": "error",
+    "security/detect-non-literal-fs-filename": "error",
+    "security/detect-non-literal-regexp": "error",
+    "security/detect-unsafe-regex": "error",
+    "security/detect-pseudoRandomBytes": "error",
+    // Trojan Source: bidi and invisible characters make code read differently than it runs.
+    "security/detect-bidi-characters": "error",
+    "security/detect-invisible-characters": "error",
+
+    // --- contracts ---------------------------------------------------------
+    "no-console": "error", // log through the project's logger
+    "no-alert": "error",
+    "no-param-reassign": "error",
+    "no-var": "error",
+    "prefer-const": "error",
+    "no-empty": "error", // an empty block hides a swallowed error
+    "no-empty-function": ["error", { "allow": ["arrowFunctions"] }], // `() => {}` is a deliberate no-op
+    "no-useless-assignment": "error", // nursery
+    "no-unreachable-loop": "error", // nursery
+    "default-case": "error",
+    "default-case-last": "error",
+    "default-param-last": "error",
+    "guard-for-in": "error",
+    "no-return-assign": "error",
+    "no-template-curly-in-string": "error",
+    "no-nested-ternary": "error", // unicorn/no-nested-ternary is the same check
+    "no-lone-blocks": "error",
+    "curly": ["error", "all"], // a braceless body is one added line away from goto fail
+    "no-sequences": ["error", { "allowInParentheses": false }], // the comma operator hides a second expression
+    "no-multi-assign": "error",
+    "no-regex-spaces": "error",
+    "oxc/bad-bitwise-operator": "error", // `|` where `||` was meant
+    "unicorn/error-message": "error",
+    "unicorn/throw-new-error": "error",
+    "unicorn/no-process-exit": "error", // exit skips pending I/O; throw or set exitCode
+    "unicorn/no-array-reduce": "error", // a loop or a named helper reads better
+    "unicorn/no-array-for-each": "error", // for…of can break, await and narrow
+
+    // --- modern idiom (golangci: modernize, gocritic) ----------------------
+    "object-shorthand": "error",
+    "prefer-template": "error",
+    "prefer-object-has-own": "error",
+    "prefer-object-spread": "error",
+    "prefer-spread": "error", // f(...args), not f.apply
+    "prefer-arrow-callback": "error",
+    "arrow-body-style": "error",
+    "logical-assignment-operators": ["error", "always", { "enforceForIfStatements": true }],
+    "typescript/prefer-find": "error",
+    "typescript/prefer-for-of": "error",
+    "typescript/prefer-regexp-exec": "error", // pairs with unicorn/prefer-regexp-test
+    "unicorn/prefer-spread": "error", // [...x], not Array.from(x) or concat
+    "unicorn/prefer-number-properties": "error",
+    "unicorn/prefer-optional-catch-binding": "error",
+    "unicorn/prefer-structured-clone": "error", // not JSON.parse(JSON.stringify(x))
+    "unicorn/no-useless-iterator-to-array": "error", // nursery
+    "prefer-rest-params": "error", // ...args, not arguments
+    "no-useless-computed-key": "error",
+    "unicorn/prefer-object-from-entries": "error",
+    "unicorn/prefer-logical-operator-over-ternary": "error", // `a ?? b`, not `a ? a : b`
+    "unicorn/prefer-default-parameters": "error",
+    "unicorn/prefer-negative-index": "error",
+    "unicorn/prefer-modern-dom-apis": "error",
+    "unicorn/prefer-modern-math-apis": "error",
+    "unicorn/prefer-response-static-json": "error", // Response.json() in route handlers
+    "unicorn/no-unreadable-array-destructuring": "error", // `[, , x]`
+    "unicorn/no-length-as-slice-end": "error",
+    "unicorn/no-magic-array-flat-depth": "error",
+    "unicorn/no-useless-error-capture-stack-trace": "error",
+
+    // --- react and next ----------------------------------------------------
+    // The React Compiler skips a component it cannot compile; these say why.
+    "react/unsupported-syntax": "error",
+    "react/rule-suppression": "error",
+    "react/todo": "error",
+    "react/invariant": "error",
+    "react/syntax": "error",
+    "react/prefer-function-component": "error",
+    "react/no-clone-element": "error",
+    "react/no-react-children": "error",
+    "react/no-unknown-property": ["error", { "ignore": ["tw"] }], // next/og (Satori) styles OG images with `tw`
+    "react/no-danger": "error",
+    "react/button-has-type": "error",
+    "react/hook-use-state": "error",
+    "react/self-closing-comp": "error",
+    "react/jsx-boolean-value": "error",
+    "react/jsx-curly-brace-presence": "error",
+    "react/jsx-fragments": "error",
+    // nextjs/no-img-element covers <img>; nextjs/no-sync-scripts only a <script> with src.
+    "react/forbid-elements": [
+      "error",
+      { "forbid": [{ "element": "script", "message": "Use next/script." }] }
+    ],
+    "jsx-a11y/anchor-ambiguous-text": "error", // "click here" gives a screen reader no context
+
+    // The plugin's nine rules: each finds an effect that derived state or a handler must replace.
+    // A backstop for files exempted from the useEffect ban; it cannot see through useMountEffect.
+    "no-effect/no-derived-state": "error",
+    "no-effect/no-chain-state-updates": "error",
+    "no-effect/no-event-handler": "error",
+    "no-effect/no-adjust-state-on-prop-change": "error",
+    "no-effect/no-reset-all-state-on-prop-change": "error",
+    "no-effect/no-pass-live-state-to-parent": "error",
+    "no-effect/no-pass-data-to-parent": "error",
+    "no-effect/no-external-store-subscription": "error",
+    "no-effect/no-initialize-state": "error",
+
+    // These keep a queryKey and its queryFn together. They report nothing until TanStack Query is used.
+    "tanstack-query/exhaustive-deps": "error",
+    "tanstack-query/no-rest-destructuring": "error",
+    "tanstack-query/stable-query-client": "error",
+    "tanstack-query/no-unstable-deps": "error",
+    "tanstack-query/infinite-query-property-order": "error",
+    "tanstack-query/no-void-query-fn": "error",
+    "tanstack-query/mutation-property-order": "error",
+    "tanstack-query/prefer-query-options": "error",
+
+    // --- tests -------------------------------------------------------------
+    "vitest/no-identical-title": "error",
+    "vitest/no-duplicate-hooks": "error",
+    "vitest/prefer-hooks-on-top": "error",
+    "vitest/no-test-return-statement": "error",
+    "vitest/prefer-to-be": "error",
+    "vitest/prefer-to-have-length": "error",
+    "vitest/prefer-strict-equal": "error", // toEqual ignores undefined properties and class identity
+    "vitest/prefer-spy-on": "error", // vi.spyOn restores; a reassigned method does not
+    "vitest/no-test-prefixes": "error", // it.skip, not xit
+    "vitest/no-import-node-test": "error",
+    "vitest/no-mocks-import": "error",
+    "vitest/no-interpolation-in-snapshots": "error",
+
+    // --- suppression control (golangci: nolintlint) ------------------------
+    // options.reportUnusedDisableDirectives catches stale suppressions; review asks for the reason.
+    "unicorn/no-abusive-eslint-disable": "error"
+  },
+
+  "overrides": [
+    {
+      // env.ts validates the environment. instrumentation.ts reads NEXT_RUNTIME
+      // before the app loads. Build configs run outside the app.
+      "files": ["env.ts", "instrumentation.ts", "*.config.ts", "*.config.mjs", "*.config.mts"],
+      "rules": { "node/no-process-env": "off" }
+    },
+    {
+      // The one sanctioned useEffect. The rule is off here instead of suppressed
+      // in the file, because the React Compiler skips any function that holds a
+      // suppression for a React rule.
+      "files": ["hooks/use-mount-effect.ts"],
+      "rules": { "no-restricted-imports": "off", "react/exhaustive-deps": "off" }
+    },
+    {
+      // describe → it → waitFor is a correct depth of three or more.
+      "files": ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"],
+      "rules": { "max-nested-callbacks": "off" }
+    }
+  ],
+
+  "ignorePatterns": [".next/**", "out/**", "build/**", "next-env.d.ts", ".claude/**", ".agents/**"]
+}

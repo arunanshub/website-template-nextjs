@@ -20,7 +20,24 @@
     ],
     "paths": {
       "@/*": ["./*"]
-    }
+    },
+    // Strictness beyond `strict`; the tree is clean under all of it.
+    // exactOptionalPropertyTypes is left off: 2 of its 5 findings are in
+    // third-party types (NextConfig, next-seo's ArticleJsonLdProps).
+    "noUncheckedIndexedAccess": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    // NOT noUnusedLocals / noUnusedParameters: oxlint's no-unused-vars is on
+    // through correctness and reports the identical set, verified on a probe.
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    // Imports erase exactly as written; pairs with isolatedModules.
+    "verbatimModuleSyntax": true,
+    // Bans enum, namespace and parameter properties: syntax that type stripping
+    // cannot erase.
+    "erasableSyntaxOnly": true
   },
   "include": [
     "next-env.d.ts",

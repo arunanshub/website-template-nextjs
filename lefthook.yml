@@ -1,0 +1,37 @@
+# Type-aware lint and tsc read .next/types (route and page types), which a fresh
+# clone does not have. Each hook therefore runs in order and generates them first
+# when they are missing; `next typegen` takes about half a second.
+pre-commit:
+  piped: true
+  commands:
+    typegen:
+      priority: 1
+      run: test -d .next/types || pnpm exec next typegen
+      glob:
+        - '*.{ts,tsx,mts,js,jsx,mjs}'
+
+    lint:
+      priority: 2
+      run: bun oxlint --deny-warnings --fix {staged_files}
+      glob:
+        - '*.{ts,tsx,mts,js,jsx,mjs}'
+      stage_fixed: true
+
+    format:
+      priority: 3
+      run: bun format {staged_files}
+      glob:
+        - '*.{ts,tsx,mts,js,jsx,mjs,md,mdx,yaml,yml,json}'
+      stage_fixed: true
+
+    typecheck:
+      priority: 4
+      run: bun typecheck
+      glob:
+        - '*.{ts,tsx,mts,mjs}'
+
+    lefthook-validate:
+      priority: 13
+      run: lefthook validate
+      glob:
+        - 'lefthook.yml'
