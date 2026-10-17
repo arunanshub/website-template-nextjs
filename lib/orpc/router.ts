@@ -3,4 +3,8 @@
  */
 import 'server-only'
 
-export const router = {}
+import { base } from './orpc'
+
+export const router = {
+  index: base.lazy(async () => import('@/app/(app)/routes')),
+}
