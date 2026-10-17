@@ -4,7 +4,5 @@ export async function register() {
     env: { service: 'my-app' },
   })
 
-  await import('@/lib/orpc/server-init')
-
-  log.info('instrumentation', 'instumentation is set up')
+  log.info('instrumentation', 'instrumentation is set up')
 }
