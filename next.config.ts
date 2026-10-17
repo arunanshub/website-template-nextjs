@@ -1,9 +1,13 @@
 import type { NextConfig } from 'next'
 
+import { env } from './env'
+
 const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   reactCompiler: true,
+
+  output: env.OUTPUT_MODE,
 
   experimental: {
     agentFeedback: true,
