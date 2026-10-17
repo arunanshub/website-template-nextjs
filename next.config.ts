@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   reactCompiler: true,
+  typedRoutes: true,
 
   output: env.OUTPUT_MODE,
 
