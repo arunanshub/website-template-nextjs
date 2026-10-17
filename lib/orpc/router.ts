@@ -6,5 +6,5 @@ import 'server-only'
 import { base } from '.'
 
 export const router = {
-  index: base.lazy(async () => import('@/app/(app)/routes')),
+  index: base.lazy(async () => import('@/app/(app)/(index)/routes')),
 }
