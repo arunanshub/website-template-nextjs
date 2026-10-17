@@ -5,9 +5,8 @@ import { createTanstackQueryUtils } from '@orpc/tanstack-query'
 
 import type { router } from '@/lib/orpc/router'
 
-import { oRPCSerializer } from './serializer'
+import { getSerializer } from './serializer'
 
-// oxlint-disable-next-line typescript/no-generated-empty-object-type
 type CustomRouterClient = RouterClient<typeof router>
 
 const link = new RPCLink({
@@ -21,7 +20,7 @@ const link = new RPCLink({
     }
     return location.origin
   },
-  serializer: oRPCSerializer,
+  serializer: getSerializer(),
 })
 
 declare global {

@@ -4,7 +4,7 @@
  */
 import { RPCJsonSerializer } from '@orpc/client'
 
-export const oRPCSerializer = new RPCJsonSerializer({
+const oRPCSerializer = new RPCJsonSerializer({
   handlers: {
     // oRPC has no built-in Uint8Array handler, so it sends the bytes as a plain object.
     uint8array: {
@@ -21,3 +21,7 @@ export const oRPCSerializer = new RPCJsonSerializer({
     },
   },
 })
+
+export function getSerializer() {
+  return oRPCSerializer
+}

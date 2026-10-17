@@ -2,9 +2,9 @@ import { EvlogHandlerPlugin } from '@orpc/evlog'
 import { RPCHandler } from '@orpc/server/fetch'
 import { RequestHeadersHandlerPlugin, ResponseHeadersHandlerPlugin } from '@orpc/server/plugins'
 
-import { loggerStorage } from '@/lib/orpc/logger'
+import { getLoggerStorage } from '@/lib/orpc/logger'
 import { router } from '@/lib/orpc/router'
-import { oRPCSerializer } from '@/lib/orpc/serializer'
+import { getSerializer } from '@/lib/orpc/serializer'
 
 const handler = new RPCHandler(router, {
   plugins: [
@@ -14,9 +14,9 @@ const handler = new RPCHandler(router, {
     new RequestHeadersHandlerPlugin(),
 
     // One wide event per request; errors are logged on it (warn for ORPCError, error otherwise)
-    new EvlogHandlerPlugin({ logAbort: true, storage: loggerStorage }),
+    new EvlogHandlerPlugin({ logAbort: true, storage: getLoggerStorage() }),
   ],
-  serializer: oRPCSerializer,
+  serializer: getSerializer(),
 })
 
 async function handleRequest(request: Request) {
