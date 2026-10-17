@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    env:
+      # Do not send anonymous usage data to Vercel during CI.
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v7
+
+      # Installs the Bun version pinned in package.json's `packageManager`.
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version-file: package.json
+
+      # setup-bun does not cache dependencies, so persist Bun's global install
+      # cache keyed on the lockfile.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      # Persist the Next.js build cache (.next/cache) between runs so `next build`
+      # reuses compiled output. Placed before `bun install` so hashFiles reads
+      # source, not the installed node_modules.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ github.workspace }}/.next/cache
+          # Bust the cache when the lockfile or any source file changes.
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('bun.lock') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          # Source changed but dependencies did not: rebuild from a prior cache.
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('bun.lock') }}-
+
+      - run: bun install --frozen-lockfile
+
+      # Generate the route type globals (PageProps/LayoutProps) that tsc and
+      # type-aware lint need. They live in .next/types and only exist after
+      # dev/build/typegen.
+      - run: bun next typegen
+
+      # tsc and lint are independent and read-only over the source + generated
+      # .next/types, so run them as a concurrent group. `parallel` runs every
+      # step as a background step with an implicit wait at the end of the group.
+      # `build` follows the group — never inside it, because `next build`
+      # rewrites .next/types and would race the type check.
+      - parallel:
+          - name: Type check
+            run: bun typecheck
+          - name: Lint
+            run: bun lint --deny-warnings
+
+      - run: bun run build
