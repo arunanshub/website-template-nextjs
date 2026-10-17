@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
+import dynamic from 'next/dynamic'
 import { Geist, Geist_Mono, Inter } from 'next/font/google'
 
-import { Toaster } from '@/components/ui/sonner'
 // Must import orpc server side client here to ensure that during build time
 // nextjs is able to execute `orpcQuery`.
 // oxlint-disable-next-line import/no-unassigned-import
@@ -11,6 +11,9 @@ import { cn } from '@/lib/utils'
 import { Providers } from '@/providers'
 
 import './globals.css'
+
+// oxlint-disable-next-line unicorn/no-await-expression-member
+const Toaster = dynamic(async () => (await import('@/components/ui/sonner')).Toaster)
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 

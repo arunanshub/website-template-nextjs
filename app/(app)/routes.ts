@@ -13,7 +13,8 @@ const routes = {
     // oxlint-disable-next-line typescript/no-unnecessary-condition
     while (true) {
       signal?.throwIfAborted()
-      yield { message: 'Hello, world!', lastEventId }
+      const d = new Date()
+      yield { message: 'Hello, world!', lastEventId, d }
       // oxlint-disable-next-line no-await-in-loop no-promise-executor-return typescript/strict-void-return
       await new Promise((resolve) => setTimeout(resolve, 1000))
     }
