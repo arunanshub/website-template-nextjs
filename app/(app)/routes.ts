@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { base } from '@/lib/orpc/orpc'
+import { base } from '@/lib/orpc'
 
 const routes = {
   fetchData: base.handler(async () => {

@@ -3,7 +3,6 @@ import type {
   RequestHeadersHandlerPluginContext,
   ResponseHeadersHandlerPluginContext,
 } from '@orpc/server/plugins'
-import 'server-only'
 
 export interface ServerContext
   extends ResponseHeadersHandlerPluginContext, RequestHeadersHandlerPluginContext {}

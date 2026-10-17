@@ -1,6 +1,6 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 
 import { orpcQuery } from '@/lib/orpc/client'
 
@@ -13,4 +13,10 @@ export function FetchDataOnClient() {
       {data !== undefined && <div>This data is from server: {data}</div>}
     </div>
   )
+}
+
+export function SuspendedDataOnClient() {
+  const { data } = useSuspenseQuery(orpcQuery.index.fetchData.queryOptions())
+
+  return <div>This data is from server: {data}</div>
 }

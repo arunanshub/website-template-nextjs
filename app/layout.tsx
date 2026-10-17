@@ -1,6 +1,10 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono, Inter } from 'next/font/google'
 
+// Must import orpc server side client here to ensure that during build time
+// nextjs is able to execute `orpcQuery`.
+// oxlint-disable-next-line import/no-unassigned-import
+import '@/lib/orpc/server-init'
 import { site } from '@/lib/site'
 import { cn } from '@/lib/utils'
 import { Providers } from '@/providers'

@@ -2,7 +2,7 @@ import { createRouterClient } from '@orpc/server'
 import { setTimeout } from 'node:timers/promises'
 import 'server-only'
 
-import { base } from '@/lib/orpc/orpc'
+import { base } from '@/lib/orpc'
 
 const routes = {
   getName: base.handler(async () => {

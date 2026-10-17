@@ -11,7 +11,7 @@
 import { createRouterClient } from '@orpc/server'
 import 'server-only'
 
-import type { ServerContext } from './orpc'
+import type { ServerContext } from '.'
 import { router } from './router'
 
 globalThis.$client = createRouterClient(router, {
