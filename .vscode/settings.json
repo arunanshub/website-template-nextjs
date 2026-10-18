@@ -1,0 +1,6 @@
+{
+  "js/ts.experimental.useTsgo": true,
+  "files.associations": {
+    "*.css": "tailwindcss"
+  }
+}
