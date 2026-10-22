@@ -7,9 +7,11 @@ uv = "latest"
 python = "3.14"
 "pypi:copier" = "latest"
 zizmor = "latest"
+node = "latest"
 
 [settings]
 lockfile = true
 lockfile_auto_prune = true
 pypi = { uvx = true }
 python = { uv_venv_auto = true }
+minimum_release_age_excludes = ["bun"]
