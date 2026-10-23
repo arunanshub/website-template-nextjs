@@ -1,3 +1,4 @@
 [install]
 linker = "isolated"
 minimumReleaseAge = "1d"
+minimumReleaseAgeExcludes = ["next", "@next/env", "react-dom", "react"]
