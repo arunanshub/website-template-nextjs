@@ -44,7 +44,7 @@
     "eslint-plugin-react-you-might-not-need-an-effect": "1.0.2",
     "eslint-plugin-security": "4.2.0",
     "knip": "^6.43.0",
-    "oxlint": "1.89.0",
+    "oxlint": "1.90.0",
     "oxlint-tsgolint": "^7.0.2005",
     "prettier": "^3.9.10",
     "prettier-plugin-tailwindcss": "^0.8.1",
