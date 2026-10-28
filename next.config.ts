@@ -27,6 +27,7 @@ const nextConfig: NextConfig = {
     requestInsights: true,
     turbopackGc: true,
     serverComponentsHmrCancellation: true,
+    turbopackLazyDynamicImports: true,
 
     // perf
     turbopackRustReactCompiler: true,
