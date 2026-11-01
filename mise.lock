@@ -51,6 +51,12 @@ url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.4/bun-windows-x
 checksum = "sha256:0f20ce6674d4f2dbcc8c5d59fdf99f7ba45f8c3b367e0f5781cbfa30a1c78d99"
 url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.4/bun-windows-x64-baseline.zip"
 
+[[tools.copier]]
+version = "9.19.1"
+backend = "pypi:copier"
+specifiers = ["latest"]
+uv = { path = ".mise/locks/copier/9.19.1", digest = "sha256:7830abea6eca97bb7c9e5b1f0ed904c926b63661810017a28a2905d2e648165f" }
+
 [[tools.lefthook]]
 version = "2.2.2"
 backend = "aqua:evilmartians/lefthook"
