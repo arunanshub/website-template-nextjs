@@ -37,6 +37,9 @@ const nextConfig: NextConfig = {
   turbopack: {
     rules: {
       '*.css': {
+        // Own CSS only: `as: '*.css'` would turn a package's `*.module.css`
+        // into plain CSS.
+        condition: { not: 'foreign' },
         loaders: ['@tailwindcss/turbopack'],
         as: '*.css',
       },
