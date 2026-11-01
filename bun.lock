@@ -34,7 +34,7 @@
         "@types/react": "^19.3.0",
         "@types/react-dom": "^19.3.0",
         "eslint-plugin-react-you-might-not-need-an-effect": "1.0.2",
-        "eslint-plugin-security": "4.2.0",
+        "eslint-plugin-security": "4.2.1",
         "knip": "^6.43.0",
         "oxlint": "1.90.0",
         "oxlint-tsgolint": "^7.0.2005",
@@ -689,7 +689,7 @@
 
     "eslint-plugin-react-you-might-not-need-an-effect": ["eslint-plugin-react-you-might-not-need-an-effect@1.0.2", "", { "dependencies": { "globals": "^16.2.0" }, "peerDependencies": { "eslint": ">=8.40.0" } }, "sha512-HgYol2zhH3KbnW9Q4FY/FcIINbsYVL6rwQESChqBC2s9SLWtw1wg05+J7SCrr3BfQpNY2ReYhf8xjpd2JhKJOQ=="],
 
-    "eslint-plugin-security": ["eslint-plugin-security@4.2.0", "", { "dependencies": { "safe-regex": "^2.1.1" } }, "sha512-LL5jbxRzlNv0vkSyBtbO7qAPofqd3xlseAFTDevyDTMmScjBrLv2/VkQ7ZFQxBaFYsa3dhpE7NcV+JkwJ9l6RQ=="],
+    "eslint-plugin-security": ["eslint-plugin-security@4.2.1", "", { "dependencies": { "safe-regex": "^2.1.1" } }, "sha512-iF95SSqdSUVTvB7srNXoNeTQIqwfALTn9nmoqJyixSIKqEydlW01Cqb7xNveqE4Zd6YWBoQICQ4FH9NkR1byDg=="],
 
     "eslint-scope": ["eslint-scope@9.1.2", "", { "dependencies": { "@types/esrecurse": "^4.3.1", "@types/estree": "^1.0.8", "esrecurse": "^4.3.0", "estraverse": "^5.2.0" } }, "sha512-xS90H51cKw0jltxmvmHy2Iai1LIqrfbw57b79w/J7MfvDfkIkFZ+kj6zC3BjtUwh150HsSSdxXZcsuv72miDFQ=="],
 

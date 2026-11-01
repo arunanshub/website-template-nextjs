@@ -42,7 +42,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "eslint-plugin-react-you-might-not-need-an-effect": "1.0.2",
-    "eslint-plugin-security": "4.2.0",
+    "eslint-plugin-security": "4.2.1",
     "knip": "^6.43.0",
     "oxlint": "1.90.0",
     "oxlint-tsgolint": "^7.0.2005",
