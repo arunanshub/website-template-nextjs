@@ -30,6 +30,7 @@ const nextConfig: NextConfig = {
     turbopackLazyDynamicImports: true,
     memoryBasedWorkersCount: true,
     workerThreads: true,
+    turbopackImportTypeBytes: true,
 
     // perf
     turbopackRustReactCompiler: true,
