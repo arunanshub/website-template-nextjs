@@ -29,6 +29,7 @@ const nextConfig: NextConfig = {
     serverComponentsHmrCancellation: true,
     turbopackLazyDynamicImports: true,
     memoryBasedWorkersCount: true,
+    workerThreads: true,
 
     // perf
     turbopackRustReactCompiler: true,
