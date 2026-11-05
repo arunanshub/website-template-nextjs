@@ -22,6 +22,8 @@ const nextConfig: NextConfig = {
     serverMinification: true,
     turbopackCjsTreeShaking: true,
     turbopackCjsScopeHoisting: true,
+    turbopackPluginRuntimeStrategy: 'workerThreads',
+    cssChunking: { type: 'graph' },
 
     // DX improvement
     requestInsights: true,
