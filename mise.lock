@@ -55,6 +55,7 @@ url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.4/bun-windows-x
 version = "9.19.1"
 backend = "pypi:copier"
 specifiers = ["latest"]
+uv = { path = ".mise/locks/copier/9.19.1", digest = "sha256:b81354b4b837f540f804fdae3c635e9856a70430cb7c6631955051bf9b9b9d8c" }
 
 [[tools.lefthook]]
 version = "2.2.2"
