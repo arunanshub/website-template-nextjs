@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4.3.4",
-    "@tanstack/eslint-plugin-query": "5.105.3",
+    "@tanstack/eslint-plugin-query": "5.107.1",
     "@tanstack/react-query-devtools": "^5.105.3",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/node": "^26.6.6",
